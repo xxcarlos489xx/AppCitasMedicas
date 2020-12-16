@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void RealizarPost() {
 
-        String url = "http://127.0.0.1:8000/api/login";
+        //String url = "http://127.0.0.1:8000/api/login";
         //String url = "http://10.0.2.2/api/login";
-
+        String url = "https://appcitas.dmqvirucida.com.pe/";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override

@@ -7,13 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -24,22 +29,24 @@ import com.android.volley.toolbox.Volley;
 import com.example.appcitas.Entity.User;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     EditText editUsuario,editPass;
     Button btnIngresar;
-    List<User> u;
+    private String dni,pass;
+    private int tipo;
+    Spinner spinner;
     private SharedPreferences shared;
     private SharedPreferences.Editor editor;
-    JsonObjectRequest jobs;//para crear un objeto de peticion
-    JSONArray vector;//capturar los datos enviados por el servidor
-    String url = "http://10.0.2.2/SerTransito/Controla.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,81 +54,70 @@ public class MainActivity extends AppCompatActivity {
         editUsuario = findViewById(R.id.editDni);
         editPass = findViewById(R.id.editPass);
         btnIngresar = findViewById(R.id.btnIngreso);
+        spinner = (Spinner) findViewById(R.id.tipo_user);
+        //crear un adaptador con el xml
+        ArrayAdapter ad = ArrayAdapter.createFromResource(getApplication(),R.array.tipo_user, android.R.layout.simple_list_item_1);
+
+        spinner.setAdapter(ad);
+        spinner.setOnItemSelectedListener(this);
+
         shared = getSharedPreferences("Login", Context.MODE_PRIVATE);
         editor = shared.edit();
     }
 
     public void Ingresar(View V){
-        String user = editUsuario.getText().toString();
-        String pass = editPass.getText().toString();
-
+        dni = editUsuario.getText().toString();
+        pass = editPass.getText().toString();
         RealizarPost();
-
-
-        /*u = new ArrayList<>();
-        String enlace = url+"?tag=consulta3&pla="+placa.getText().toString();
-        u = new ArrayList<>();
-        jobs=new JsonObjectRequest(Request.Method.GET, enlace, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                //captura de la respuesta
-                try {
-                    vector = response.getJSONArray("dato");
-                    //Log.w("dato",vector.toString());
-                    if ((vector.toString()).equals("[]")){
-                        Toast.makeText(getApplication(),"usuario no registrado",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    for (int n=0;n<vector.length();n++){
-                        User us = new Papeleta();
-                        JSONObject fila =(JSONObject) vector.get(n);
-                        us.setCod(fila.getString("pape"));
-                        us.setFecha(fila.getString("fecha"));
-                        us.setDesc(fila.getString("desp"));
-                        us.setMonto(fila.getDouble("monto"));
-                        u.add(us);
-                    }
-
-                }catch (Exception ex){
-                    //Toast.makeText(getApplicationContext(),ex.getMessage(),Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });//fin del JsonRequest
-        RequestQueue cola = Volley.newRequestQueue(getActivity());
-        cola.add(jobs);*/
-
-
-
-        editor.putString("dni",user);
-        editor.putString("pass",pass);
-        editor.commit();
-        //Toast.makeText(getApplication(), user, Toast.LENGTH_SHORT).show();
-        //Intent ite = new Intent(this,MenuActivity.class);
-        //startActivity(ite);
     }
 
     public void RealizarPost() {
-
-        //String url = "http://127.0.0.1:8000/api/login";
-        //String url = "http://10.0.2.2/api/login";
-        String url = "https://appcitas.dmqvirucida.com.pe/";
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
+        String url = "https://citas.dmqvirucida.com.pe/api/login";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //((TextView)findViewById(R.id.TextResult)).setText(response);
-                        Toast.makeText(getApplication(), response, Toast.LENGTH_SHORT).show();
+                        //tipo de dato
+                        //response.getClass().getSimpleName()
+                        //Log.w("dato",obj.toString());
+
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            int estado = obj.getInt("estado");
+                            //Log.w("message", obj.getString("message"));
+                            if (estado == 400){
+                                Toast.makeText(getApplication(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                return;
+                            }else if(estado == 200){
+                                String data = obj.getString("dato");
+                                JSONObject user = new JSONObject(data);
+                                Log.w("message", obj.getString("dato"));
+                                editor.putInt("id",user.getInt("id"));
+                                editor.putString("nombres",user.getString("nombres"));
+                                editor.putString("apellidos",user.getString("apellidos"));
+                                editor.putString("dni",user.getString("dni"));
+                                editor.putString("telefono",user.getString("telefono"));
+                                //editor.putString("correo",user.getString("correo"));
+                                //editor.putString("direccion",user.getString("direccion"));
+                                editor.putInt("tipo",user.getInt("usuario_id"));
+                                editor.commit();
+
+                                Intent ite = new Intent(getApplication(),MenuActivity.class);
+                                startActivity(ite);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
+                        NetworkResponse response = error.networkResponse;
+                        //Log.w("error", String.valueOf(response.statusCode));
+                        /*if (response.equals("400")){
+                            Log.w("dato",response.toString());
+                        }*/
                     }
                 }
         ) {
@@ -130,11 +126,14 @@ public class MainActivity extends AppCompatActivity {
             {
                 Map<String, String>  params = new HashMap<>();
                 // the POST parameters:
-                params.put("your-name", "Pepito Grillo");
+                params.put("dni", dni);
+                params.put("pass", pass);
+                params.put("tipo", ""+tipo);
                 return params;
             }
         };
         Volley.newRequestQueue(this).add(postRequest);
+
     }
 
     public void FormRegistro(View V){
@@ -142,4 +141,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(ite);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        if (position == 0)
+            tipo = 1;
+        else if (position==1)
+            tipo = 2;
+        else if (position == 2)
+            tipo = 3;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

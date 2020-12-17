@@ -7,11 +7,11 @@
     <fragment
         android:id="@+id/agendarFragment"
         android:name="com.example.appcitas.AgendarFragment"
-        android:label="fragment_agendar"
+        android:label="Agendar cita"
         tools:layout="@layout/fragment_agendar" />
     <fragment
         android:id="@+id/listarFragment"
         android:name="com.example.appcitas.ListarFragment"
-        android:label="fragment_listar"
+        android:label="Lista de citas"
         tools:layout="@layout/fragment_listar" />
 </navigation>

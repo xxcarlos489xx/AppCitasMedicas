@@ -24,7 +24,17 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="tipoDoc">
         <item>DNI</item>
-        <item>CARNET EXTRANJERIA</item>
-        <item>PASAPORTE</item>
+        <!--<item>CARNET EXTRANJERIA</item>
+        <item>PASAPORTE</item>-->
     </string-array>
+    <string-array name="tipo_user">
+        <item>Paciente</item>
+        <item>Médico</item>
+        <item>Administrador</item>
+    </string-array>
+    <string-array name="tipo_user_reg">
+        <item>Paciente</item>
+        <item>Médico</item>
+    </string-array>
+
 </resources>

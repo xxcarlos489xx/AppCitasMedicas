@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         shared = getSharedPreferences("Login", Context.MODE_PRIVATE);
         editor = shared.edit();
+        editor.clear().apply();
     }
 
     public void Ingresar(View V){
@@ -77,9 +78,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onResponse(String response) {
                         //tipo de dato
-                        //response.getClass().getSimpleName()
-                        //Log.w("dato",obj.toString());
-
+                        //response.getClass().getSimpleName();
                         try {
                             JSONObject obj = new JSONObject(response);
                             int estado = obj.getInt("estado");
@@ -90,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }else if(estado == 200){
                                 String data = obj.getString("dato");
                                 JSONObject user = new JSONObject(data);
-                                Log.w("message", obj.getString("dato"));
-                                editor.putInt("id",user.getInt("id"));
+                                //Log.w("message", obj.getString("dato"));
+                                editor.putInt("idUser",user.getInt("id"));
                                 editor.putString("nombres",user.getString("nombres"));
                                 editor.putString("apellidos",user.getString("apellidos"));
                                 editor.putString("dni",user.getString("dni"));
@@ -100,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 //editor.putString("direccion",user.getString("direccion"));
                                 editor.putInt("tipo",user.getInt("usuario_id"));
                                 editor.commit();
-
                                 Intent ite = new Intent(getApplication(),MenuActivity.class);
                                 startActivity(ite);
                             }
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             {
                 Map<String, String>  params = new HashMap<>();
                 // the POST parameters:
-                params.put("dni", dni);
+                params.put("dni", ""+dni);
                 params.put("pass", pass);
                 params.put("tipo", ""+tipo);
                 return params;

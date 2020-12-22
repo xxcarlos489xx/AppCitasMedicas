@@ -26,7 +26,8 @@
         android:drawablePadding="10dp"
         android:ems="10"
         android:hint="Ingrese número de DNI"
-        android:inputType="textPersonName"
+        android:inputType="number"
+        android:maxLength="8"
         android:paddingStart="10dp" />
 
     <EditText

@@ -35,7 +35,6 @@ public class MenuActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.agendarFragment, R.id.listarFragment)
                 .setDrawerLayout(drawer)
@@ -53,7 +52,7 @@ public class MenuActivity extends AppCompatActivity {
         TextView names = (TextView) header.findViewById(R.id.nameHeader);
         TextView tipo = (TextView) header.findViewById(R.id.tipo);
         names.setText(nombres+" "+apellidos);
-        if (t==1)
+        if(t==1)
             tipo.setText("Paciente");
         else if(t==2)
             tipo.setText("Medico");

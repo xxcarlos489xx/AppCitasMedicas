@@ -120,10 +120,10 @@ public class RegisterActivity extends AppCompatActivity implements AdapterView.O
                 // the POST parameters:
                 params.put("names", nom.getText().toString());
                 params.put("lastnames", ape.getText().toString());
-                params.put("dni", nrodoc.getText().toString());
+                params.put("dni", ""+nrodoc.getText().toString());
                 params.put("pass", pass.getText().toString());
                 params.put("tipo", ""+tipo);
-                params.put("tel", tel.getText().toString());
+                params.put("tel", ""+tel.getText().toString());
                 return params;
             }
         };

@@ -34,17 +34,17 @@
     </string-array>
     <string-array name="tipo_user_reg">
         <item>Paciente</item>
-        <item>Médico</item>
-    </string-array>
-    <string-array name="rango_horas">
-        <item>De 08:00 a 09.00</item>
-        <item>De 09:00 a 10.00</item>
-        <item>De 10:00 a 11.00</item>
-        <item>De 11:00 a 12.00</item>
-        <item>De 12:00 a 13.00</item>
-        <item>De 14:00 a 15.00</item>
-        <item>De 15:00 a 16.00</item>
-        <item>De 16:00 a 17.00</item>
-    </string-array>
+        <!-- <item>Médico</item>-->
+     </string-array>
+     <string-array name="rango_horas">
+         <item>De 08:00 a 09.00</item>
+         <item>De 09:00 a 10.00</item>
+         <item>De 10:00 a 11.00</item>
+         <item>De 11:00 a 12.00</item>
+         <item>De 12:00 a 13.00</item>
+         <item>De 14:00 a 15.00</item>
+         <item>De 15:00 a 16.00</item>
+         <item>De 16:00 a 17.00</item>
+     </string-array>
 
-</resources>
+ </resources>
